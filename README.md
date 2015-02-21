@@ -1,14 +1,15 @@
 # ScrapyDalinHuang
 <br><br>
-Py Used:  Python 2.79, scrapy
+Used:  Python 2.79, scrapy, Git
+System: OS X (10.x)
 <br><br>
-To run it:<br>
+How to run it:<br>
 scrapy crawl dalin -o dainhuang.json -t json
 <br><br>
 
 Category path:<br>
 	Department >> Sub_Department >> Sub_Sub_Department >> this_category<br>
-(example):  Home  >>  TV & Video  >>  Televisions  >>  25 - 31" Televisions<br><br>
+(example):  Home  >>  TV & Video  >>  Televisions  >>  25 - 31" Televisions<br>
 	
 
 Features:<br>
