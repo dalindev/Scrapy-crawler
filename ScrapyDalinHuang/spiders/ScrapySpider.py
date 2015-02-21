@@ -1,21 +1,6 @@
 #!/usr/bin/python
 #-*-coding:utf-8-*-
 
-# import time
-# import scrapy
-# from pprint import pprint
-# from scrapy.contrib.linkextractors import LinkExtractor
-# from scrapy.spider import BaseSpider
-# from scrapy.selector import HtmlXPathSelector
-# from dirbot.items import VisionsCrawlerItem
-# from dirbot.utils.select_result import clean_link
-
-
-#  =========================== WORKING VERSION 001 =================================================================================
-
-
-
-
 #  scrapy crawl dalin -o dainhuang.json -t json
 
 # Feb 19, 2015. By: Dalin_Huang
@@ -30,14 +15,9 @@ class DmozSpider(Spider):
     # allowed_domains = ['visions.ca/']
     start_urls =  ['http://www.visions.ca',]
     
-
     # rules = (
     #         Rule(LinkExtractor(allow=('Catalogue/Bundles/',)), callback='parse_for_Bundles', dont_filter=True),
-
-
     #     )
-
-
 
     # TOP main menu with 13 departments (TV & VIDEO, HOME AUDIO etc...)
     def parse(self, response):
@@ -73,9 +53,12 @@ class DmozSpider(Spider):
 
                 yield Request(url=Sub_Dept_url , callback=self.parse_Sub_Sub_Department)
 
+        # else (this department do not have any sub department)
+        # directly callback to parse_product_detail
         else:
-            # else (this department do not have any sub department)
-            # directly callback to parse_product_detail
+            if 'categoryId=837&menu=741' in thisURL:
+                thisURL = 'http://www.visions.ca/Catalogue/Category/ProductResults.aspx?categoryId=837&brandId=176'
+
             yield Request(url=thisURL, callback=self.parse_Product_Detail, dont_filter=True)
 
 
@@ -144,11 +127,11 @@ class DmozSpider(Spider):
             p_item['Product_title'] = product_html.xpath('h2/a//text()').extract()[0]
             p_item['Product_SKU'] = product_html.xpath('h2/a//text()').extract()[2]
             # Sale_Price is the current price (could be sale or regular)
-            p_item['Sale_Price'] = product_html.xpath('div/div//text()').extract()[0]
+            p_item['Sale_Price'] = product_html.xpath('div/div//text()').extract()[0].strip()
             try:
-                p_item['Regular_Price'] = product_html.xpath('div/div[2]//text()').extract()[0]
+                p_item['Regular_Price'] = product_html.xpath('div/div[2]//text()').extract()[0].strip()
             except:
-                p_item['Regular_Price'] = product_html.xpath('div/div//text()').extract()[0]
+                p_item['Regular_Price'] = product_html.xpath('div/div//text()').extract()[0].strip()
             # if this have the In_STORE_ONLY image, then it is not avaliable online
             try:
                 p_item['Availability'] = product_html.css('a[href*=StoreLocator] img::attr(src)').extract()[0]
@@ -190,7 +173,7 @@ class DmozSpider(Spider):
         for bundle_html in bundle_list_html:
             b_item = BundlesItem()
 
-            b_item['BundlesTitle'] = bundle_html.xpath('tr[1]/td[2]/a/text()').extract()
+            b_item['BundlesTitle'] = bundle_html.xpath('tr[1]/td[2]/a/text()').extract()[0]
             b_item['Bundles_SKU'] = bundle_html.xpath('tr[1]/td[1]/div[2]/text()').extract()[0].strip()
             # Sale_Price is the Current Price (hence this could be descripted as sale or regular price)
             try:
@@ -217,11 +200,6 @@ class DmozSpider(Spider):
 
         Category_Item['Category_and_Products'].append(Product_List_Item)
         return Category_Item
-
-
-
-
-
 
 
  # =========================== WORKING VERSION =================================================================================
