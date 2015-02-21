@@ -9,6 +9,7 @@ class CategoryItem(Item):
 class ProductListItem(Item):
 	Product_List = Field()
 
+# product detail info
 class ProductItem(Item):
 	Product_SKU = Field()
 	Product_title = Field()
@@ -18,18 +19,15 @@ class ProductItem(Item):
 	Product_url = Field()
 
 class Dept(Item):
-
 	Department = Field()
 	# Department_url = Field()
-
 	Sub_Department = Field()
 	# Sub_Department_url = Field()
-
 	Sub_Sub_Department = Field()
 	# Sub_Sub_Department_url = Field()
-
 	this_category = Field()
 
+# only for bundles
 class BundlesItem(Item):
 	BundlesTitle = Field()
 	Regular_Price = Field()
