@@ -13,5 +13,9 @@ BOT_NAME = 'ScrapyDalinHuang'
 SPIDER_MODULES = ['ScrapyDalinHuang.spiders']
 NEWSPIDER_MODULE = 'ScrapyDalinHuang.spiders'
 
+DOWNLOAD_DELAY = 0.1
+CONCURRENT_REQUESTS = 250
+
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'ScrapyDalinHuang (+http://www.yourdomain.com)'
