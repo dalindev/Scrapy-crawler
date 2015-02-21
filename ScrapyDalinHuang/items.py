@@ -35,6 +35,7 @@ class BundlesItem(Item):
 	Regular_Price = Field()
 	Sale_Price = Field()
 	Availability = Field()
-	Product_url = Field()
+	Bundles_url = Field()
 	Bundles_SKU = Field()
+	Bundles_List_Item = Field()
 

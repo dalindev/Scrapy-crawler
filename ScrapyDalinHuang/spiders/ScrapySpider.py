@@ -1,13 +1,6 @@
 #!/usr/bin/python
 #-*-coding:utf-8-*-
 
-# scrapy crawl dmoz -o scraped_data.json
-
-# sys.setdefaultencoding() does not exist, here!
-# import sys
-# reload(sys)  # Reload does the trick!
-# sys.setdefaultencoding('UTF8')
-
 # import time
 # import scrapy
 # from pprint import pprint
@@ -28,7 +21,7 @@
 # Feb 19, 2015. By: Dalin_Huang
 from scrapy.spider import Spider
 from scrapy.selector import Selector
-from dirbot.items import CategoryItem,ProductListItem,ProductItem,Dept,BundlesItem
+from ScrapyDalinHuang.items import CategoryItem,ProductListItem,ProductItem,Dept,BundlesItem
 from scrapy.http import Request
 from scrapy.contrib.linkextractors import LinkExtractor
 
@@ -120,8 +113,8 @@ class DmozSpider(Spider):
         Dept_List = Dept()
 
         # 2.detail product list
-        Product_Lite_Item = ProductListItem()
-        Product_Lite_Item['Product_List'] = []
+        Product_List_Item = ProductListItem()
+        Product_List_Item['Product_List'] = []
 
         categories = res_sel.xpath('//*[@id="ctl00_pnlBreadCrumbs"]/a//text()').extract()
         thiscategory = res_sel.xpath('//*[@id="ctl00_pnlBreadCrumbs"]/span//text()').extract()
@@ -166,14 +159,13 @@ class DmozSpider(Spider):
             temp = product_html.xpath('h2/a/@href').extract()[0]
             p_item['Product_url'] = ('http://www.visions.ca/Catalogue/Category/'+temp)
 
+            Product_List_Item['Product_List'].append(p_item)
+
+        Category_Item['Category_and_Products'].append(Product_List_Item)
+        return Category_Item
 
 
-            Product_Lite_Item['Product_List'].append(p_item)
-
-        Category_Item['Category_and_Products'].append(Product_Lite_Item)
-        return [Category_Item]
-
-
+    # only for Bundles category
     def parse_for_Bundles(self, response):
         res_sel = Selector(response)
 
@@ -186,56 +178,45 @@ class DmozSpider(Spider):
         Dept_List = Dept()
 
         # 2.detail product list
-        Product_Lite_Item = ProductListItem()
-        Product_Lite_Item['Product_List'] = []
+        Product_List_Item = ProductListItem()
+        Product_List_Item['Product_List'] = []
 
-        categories = res_sel.xpath('//*[@id="ctl00_pnlBreadCrumbs"]/a//text()').extract()
-        thiscategory = res_sel.xpath('//*[@id="ctl00_pnlBreadCrumbs"]/span//text()').extract()
-        try:
-            Dept_List['Department'] = categories[0]
-        except:
-            pass
-        try:
-            Dept_List['Sub_Department'] = categories[1]
-        except:
-            pass
-        try:
-            Dept_List['Sub_Sub_Department'] = categories[2]
-        except:
-            pass
-        try:
-            Dept_List['this_category'] = thiscategory[0]
-        except:
-            pass
+        Dept_List['Department'] = ('Home')
+        Dept_List['Sub_Department'] = ('Bundles')
 
         Category_Item['Category_and_Products'].append(Dept_List)
 
-        product_list_html = res_sel.xpath('//div[@class="contentright"]')
-        for product_html in product_list_html:
-            p_item = ProductItem()
+        bundle_list_html = res_sel.xpath('//table[@class="bundleItemTable"]')
+        for bundle_html in bundle_list_html:
+            b_item = BundlesItem()
 
-            p_item['Product_title'] = product_html.xpath('h2/a//text()').extract()[0]
-            p_item['Product_SKU'] = product_html.xpath('h2/a//text()').extract()[2]
-            # Sale_Price is the current price (could be sale or regular)
-            p_item['Sale_Price'] = product_html.xpath('div/div//text()').extract()[0]
+            b_item['BundlesTitle'] = bundle_html.xpath('tr[1]/td[2]/a/text()').extract()
+            b_item['Bundles_SKU'] = bundle_html.xpath('tr[1]/td[1]/div[2]/text()').extract()[0].strip()
+            # Sale_Price is the Current Price (hence this could be descripted as sale or regular price)
             try:
-                p_item['Regular_Price'] = product_html.xpath('div/div[2]//text()').extract()[0]
+                b_item['Sale_Price'] = bundle_html.xpath('tr[1]/td[3]/span[3]/span//text()').extract()[0]
             except:
-                p_item['Regular_Price'] = product_html.xpath('div/div//text()').extract()[0]
-            # if this have the In_STORE_ONLY image, then it is not avaliable online
+                b_item['Sale_Price'] = bundle_html.xpath('tr[1]/td[3]/span[1]/span//text()').extract()[0]
             try:
-                p_item['Availability'] = product_html.css('a[href*=StoreLocator] img::attr(src)').extract()[0]
-                p_item['Availability'] = ('IN_STORE_ONLY')
+                b_item['Regular_Price'] = bundle_html.xpath('tr[1]/td[3]/span[1]/span//text()').extract()[0]
+            except:
+                b_item['Regular_Price'] = bundle_html.xpath('tr[1]/td[3]/span[3]/span//text()').extract()[0]
+            # if this have the In_STORE_ONLY image, then it is not avaliable online
+            # using CSS Selector
+            try:
+                b_item['Availability'] = bundle_html.css('a[href*=StoreLocator] img::attr(src)').extract()[0]
+                b_item['Availability'] = ('IN_STORE_ONLY')
             except: 
-                p_item['Availability'] = ('AVALIABLE_ONLINE')
-            # product_html links
-            temp = product_html.xpath('h2/a/@href').extract()[0]
-            p_item['Product_url'] = ('http://www.visions.ca/Catalogue/Category/'+temp)
+                b_item['Availability'] = ('AVALIABLE_ONLINE')
+            # bundle_html links
+            b_item['Bundles_url'] = ('http://www.visions.ca/Catalogue/Bundles/Default.aspx')
+            # product list for this bundle
+            b_item['Bundles_List_Item'] = bundle_html.xpath('tr[3]/td/ul/li//text()').extract()
 
-            Product_Lite_Item['Product_List'].append(p_item)
+            Product_List_Item['Product_List'].append(b_item)
 
-        Category_Item['Category_and_Products'].append(Product_Lite_Item)
-        return [Category_Item]
+        Category_Item['Category_and_Products'].append(Product_List_Item)
+        return Category_Item
 
 
 

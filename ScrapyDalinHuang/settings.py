@@ -13,6 +13,8 @@ BOT_NAME = 'ScrapyDalinHuang'
 SPIDER_MODULES = ['ScrapyDalinHuang.spiders']
 NEWSPIDER_MODULE = 'ScrapyDalinHuang.spiders'
 
+# used 0.1 sec for fast scrapy (DalinHuang)
+# most of the time should use 2-5 sec
 DOWNLOAD_DELAY = 0.1
 CONCURRENT_REQUESTS = 250
 
