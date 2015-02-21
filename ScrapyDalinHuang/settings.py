@@ -15,7 +15,7 @@ NEWSPIDER_MODULE = 'ScrapyDalinHuang.spiders'
 
 # used 0.1 sec for fast scrapy (DalinHuang)
 # most of the time should use 2-5 sec
-DOWNLOAD_DELAY = 0.1
+DOWNLOAD_DELAY = 0.01
 CONCURRENT_REQUESTS = 250
 
 
