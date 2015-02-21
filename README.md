@@ -13,14 +13,15 @@ Category path:<br>
 	
 
 Features:<br>
-	• Fast speed with 6639 Products retrieved in 5mins (DOWNLOAD_DELAY = 0.01), 7mins (DOWNLOAD_DELAY = 0.01)<br>
-	• No wasted request, spider is guided through categories<br>
-	• Sub_Departments Gift Card and Bundles are special treated since page formates are different<br>
-	
+• Fast speed with 6639 Products retrieved in 5mins (DOWNLOAD_DELAY = 0.01), 7mins (DOWNLOAD_DELAY = 0.01)<br>
+• Products info were retrieved in product list pages (15 product each page) <br>hence it is much faster than going to product pages
+• No wasted request, spider is guided through categories<br>
+• Sub_Departments Gift Card and Bundles are special treated since page formates are different<br>
+
 Known Issues:<br>
-	• Output Data Scructures (Json) are not well formated, sacrificed for fast running speed (currently)<br>
-	• Some of the Category names shown in http://www.visions.ca/ home page are different inside sub categories<br>
- 	 	 		[ I used categoies path shown in the product page ]
+• Output Data Structures (JSON) are not well formated, but it is very easy to handle data with JSON<br>
+• Some of the Category names shown in http://www.visions.ca/ home page are different inside sub categories pages<br>
+[ I used the categories path shown in the product page ]<br>
  	 	 		
  	 	 		
 <br><br><br>
