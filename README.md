@@ -1,4 +1,4 @@
-# ScrapyDalinHuang
+# Scrapy
 <br><br>
 Used:  Python 2.79, scrapy, Git
 <br>System: OS X (10.x)
