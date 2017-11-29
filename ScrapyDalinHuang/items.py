@@ -36,4 +36,3 @@ class BundlesItem(Item):
 	Bundles_url = Field()
 	Bundles_SKU = Field()
 	Bundles_List_Item = Field()
-
