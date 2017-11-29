@@ -200,7 +200,3 @@ class DmozSpider(Spider):
         Category_Item['Category_and_Products'].append(Product_List_Item)
 
         return Category_Item
-
-
-
-
